@@ -1,0 +1,58 @@
+---
+title: "tentremendoustricks"
+output: html_document
+---
+
+# Ten Tidyverse Tricks using Diamond dataset
+[Video](https://www.youtube.com/watch?v=NDHSBUN_rVU). Thank you David Robinson!
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r loadlibrary, warning=FALSE}
+library(tidyverse)
+library(broom) # for 'tidy'
+library(purrr) # for 'map'
+```
+
+### 1. count()
+Display a sorted frequency table of number diamonds in each Clarity group
+
+```{r count}
+diamonds %>% count(clarity, sort=T, name = "Number")  # sortedfreq
+diamonds %>% count(clarity, wt=price, sort=T)  # sum of Price for each Clarity group
+```
+
+### 2. creating variables in count()
+Show number of diamonds in each $1000 price range
+
+```{r createvarscount}
+diamonds %>% count(thous = 1000 * price %/% 1000) %>% ggplot(aes(thous, n)) +
+  geom_line()
+```
+
+### 3. add_count()
+Add column to diamonds showing the number of diamonds in each Clarity group
+
+```{r addcount}
+diamonds %>% add_count(clarity)
+# select Clarity with > 3000 diamonds
+diamonds %>% add_count(clarity) %>% filter(n>3000)
+```
+
+### 4. summarize() w/ a list column
+Test the NULL hypo that price is 4000 regardless of clarity  t.test mu=4000 [video](https://youtu.be/NDHSBUN_rVU?t=576)
+
+```{r summarizeListColumn}
+ttests = diamonds %>% group_by(clarity) %>% summarize(t_test = list(t.test(price, mu=4000)))
+ttests %>% mutate(tidied = map(t_test, tidy)) %>% unnest(tidied) %>%
+  ggplot(aes(estimate, clarity)) + geom_point() +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high))
+```
+
+
+```{r sessioninfo}
+sessionInfo()
+```
+
