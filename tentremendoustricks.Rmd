@@ -1,5 +1,5 @@
 ---
-title: "tentremendoustricks"
+title: "Ten Tremendous Tricks"
 output: html_document
 ---
 
