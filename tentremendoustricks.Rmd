@@ -51,6 +51,15 @@ ttests %>% mutate(tidied = map(t_test, tidy)) %>% unnest(tidied) %>%
   geom_errorbarh(aes(xmin = conf.low, xmax = conf.high))
 ```
 
+### 5. fct_reorder + geom_col + coord_flip
+
+```{r}
+# Reorder Clarity groups descending by total number of diamonds (on the fly!)
+diamonds %>% count(clarity) %>% mutate(clarity = fct_reorder(clarity, n)) %>% 
+  ggplot(aes(clarity, n)) + geom_col() + coord_flip()
+```
+
+
 
 ```{r sessioninfo}
 sessionInfo()
