@@ -59,6 +59,17 @@ diamonds %>% count(clarity) %>% mutate(clarity = fct_reorder(clarity, n)) %>%
   ggplot(aes(clarity, n)) + geom_col() + coord_flip()
 ```
 
+### 6. fct_lump()
+Before using 'lump'. This shows all Clarity groups. But lets say you want to only show the top 3 frequenct Clarity groups and LUMP all others into an Other category (see next plot) 
+```{r}
+diamonds %>% ggplot (aes(clarity, price)) + geom_boxplot() + coord_flip()
+```
+
+After using 'fct_lump'. This lumps Clarity groups into Other if they are not the top 3 most frequent Clarity groups. Then reorder Clarity factor levels descending by 'price' using 'fct_reorder'
+```{r}
+diamonds %>% mutate(clarity=fct_lump(clarity,3), clarity=fct_reorder(clarity, price)) %>% ggplot (aes(clarity, price)) + geom_boxplot() + coord_flip()
+```
+
 
 
 ```{r sessioninfo}
