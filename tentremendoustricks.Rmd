@@ -53,7 +53,7 @@ ttests %>% mutate(tidied = map(t_test, tidy)) %>% unnest(tidied) %>%
 
 ### 5. fct_reorder + geom_col + coord_flip
 
-```{r}
+```{r fct_reorder}
 # Reorder Clarity groups descending by total number of diamonds (on the fly!)
 diamonds %>% count(clarity) %>% mutate(clarity = fct_reorder(clarity, n)) %>% 
   ggplot(aes(clarity, n)) + geom_col() + coord_flip()
@@ -61,13 +61,29 @@ diamonds %>% count(clarity) %>% mutate(clarity = fct_reorder(clarity, n)) %>%
 
 ### 6. fct_lump()
 Before using 'lump'. This shows all Clarity groups. But lets say you want to only show the top 3 frequenct Clarity groups and LUMP all others into an Other category (see next plot) 
-```{r}
+```{r fct_lump}
 diamonds %>% ggplot (aes(clarity, price)) + geom_boxplot() + coord_flip()
 ```
 
 After using 'fct_lump'. This lumps Clarity groups into Other if they are not the top 3 most frequent Clarity groups. Then reorder Clarity factor levels descending by 'price' using 'fct_reorder'
-```{r}
+```{r fct_lump2}
 diamonds %>% mutate(clarity=fct_lump(clarity,3), clarity=fct_reorder(clarity, price)) %>% ggplot (aes(clarity, price)) + geom_boxplot() + coord_flip()
+```
+
+### 7. Log scales scale_x/y_log10()
+Alot of data is Log normal so let's check the Carat distribution before and after Logging
+
+```{r logscales_before}
+diamonds %>% ggplot(aes(carat)) + geom_histogram()# + scale_x_log10()
+```
+
+```{r logscales_after}
+diamonds %>% ggplot(aes(carat)) + geom_histogram() + scale_x_log10()
+```
+
+Perhaps(??) you get a better prediction of Price with Log Carat
+```{r logscales_prediction}
+diamonds %>% ggplot(aes(carat, price)) + geom_point() + scale_x_log10()
 ```
 
 
