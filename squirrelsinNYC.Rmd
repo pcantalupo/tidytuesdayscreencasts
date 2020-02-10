@@ -1,0 +1,18 @@
+---
+title: "Tidy Tuesday Screencasts - Squirrels in NYC"
+output: html_document
+---
+
+# Squirrels in NYC
+
+[video](https://www.youtube.com/watch?v=6GV9sAD6Pi0)
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+mtcars
+```
+
