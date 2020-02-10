@@ -88,6 +88,7 @@ diamonds %>% ggplot(aes(carat, price)) + geom_point() + scale_x_log10()
 
 ### 8. Crossing()
 [video](https://www.youtube.com/watch?v=NDHSBUN_rVU)
+From tidyr package
 - returns a tibble
 - no conversion of strings to factors
 - can cross two tibbles together
@@ -119,9 +120,19 @@ crossing(total_genesDNArep = total_genesDNArep, total_sample=total_sample) %>%
 ```
 
 ### 9. separate()
-
+Opposite of tidyr 'unite'
 ```{r}
+mtcars
+x = mtcars %>% tbl_df() %>% unite(mpg, cyl, col = "temp") %>% mutate(mpgcyl = temp) %>% select(temp, mpgcyl)
+x
+x %>% separate(mpgcyl, c("mpg", "cyl"), sep = "_")
+```
 
+### 10. extract()
+From tidyr. Useful for pulling out patterns embedded in a field. Here I'm splitting 'cut' into the first and second word.
+```{r}
+diamonds
+diamonds %>% tidyr::extract(cut, c("firstword","secondword"), "(.*) (.*)", convert=T)
 ```
 
 
