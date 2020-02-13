@@ -1,11 +1,13 @@
 ---
 title: "Tidy Tuesday Screencasts - Squirrels in NYC"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 # Squirrels in NYC
-
-[video](https://www.youtube.com/watch?v=6GV9sAD6Pi0)
+- [Video](https://www.youtube.com/watch?v=6GV9sAD6Pi0)
+- [Github repo](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-10-29)
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -13,6 +15,26 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r}
-mtcars
+library(tidyverse)
+theme_set(theme_light())
+nyc_squirrels <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-29/nyc_squirrels.csv")
 ```
 
+```{r}
+nyc_squirrels %>% count(zip_codes, sort = T)
+```
+
+Plot Lat and Long to deterime if this is central park. Also, each point is a squirrel
+```{r}
+nyc_squirrels %>%
+  ggplot(aes(long, lat)) + geom_point()
+```
+
+Can we simplify the plot since it looks too busy? Let's summarize data on the hectare level. Since hectare is a string, let's average the Lat and Long of all points in a Hectare and keep track of number of Squirrels in each Hectare.
+```{r}
+by_hectare = nyc_squirrels %>% group_by(hectare) %>%
+  summarize(long=mean(long), lat = mean(lat), n = n())
+
+by_hectare %>% ggplot(aes(long, lat, size = n)) + geom_point() +
+  theme_void()
+```
