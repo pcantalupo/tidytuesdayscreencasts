@@ -32,9 +32,47 @@ nyc_squirrels %>%
 
 Can we simplify the plot since it looks too busy? Let's summarize data on the hectare level. Since hectare is a string, let's average the Lat and Long of all points in a Hectare and keep track of number of Squirrels in each Hectare.
 ```{r}
-by_hectare = nyc_squirrels %>% group_by(hectare) %>%
-  summarize(long=mean(long), lat = mean(lat), n = n())
+by_hectare = nyc_squirrels %>%
+  filter(!is.na(primary_fur_color)) %>%   # this is for next block of code
+  group_by(hectare) %>%
+  summarize(long=mean(long),
+            lat = mean(lat),
+            n = n(),
+            pct_gray = mean(primary_fur_color == "Gray", na.rm = T))  # for next block of code
 
 by_hectare %>% ggplot(aes(long, lat, size = n)) + geom_point() +
   theme_void()
 ```
+
+Hypothesis: fur color is dependent on the location. There is a slight reduction in Gray squirrels in smaller latitudes.
+```{r}
+nyc_squirrels %>% count(primary_fur_color, sort = T)
+
+# Only show hectares with at least 10 S
+by_hectare %>% filter(n >= 10) %>%
+  ggplot(aes(long, lat, size = n, color = pct_gray)) +
+  geom_point()
+
+# Seems like there is a trend
+by_hectare %>% filter(n >= 10) %>%
+  ggplot(aes(lat, pct_gray)) +
+  geom_point() + 
+  geom_smooth()
+
+# Test it with a logistic regression
+by_hectare %>% mutate(n_gray = round(pct_gray * n)) %>%
+  glm(cbind(n_gray, n - n_gray) ~ lat, data = ., family = "binomial") %>%  # <-- I don't understand how/why he chose these as the y-variables. I thought you need Y to be a binary factor (see: https://www.statmethods.net/advstats/glm.html)
+  summary()
+```
+S may be more likely to be gray at higher north in the park you go
+
+
+
+```{r}
+
+```
+
+
+
+
+
