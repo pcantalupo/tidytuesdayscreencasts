@@ -6,7 +6,7 @@ editor_options:
 ---
 
 # Squirrels in NYC
-- [Video](https://www.youtube.com/watch?v=6GV9sAD6Pi0)
+- [Video](https://www.youtube.com/watch?v=6GV9sAD6Pi0), [Stopped here](https://youtu.be/6GV9sAD6Pi0?t=1502)
 - [Github repo](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-10-29)
 
 ```{r setup, include=FALSE}
@@ -67,10 +67,44 @@ by_hectare %>% mutate(n_gray = round(pct_gray * n)) %>%
 S may be more likely to be gray at higher north in the park you go
 
 
+Exploring fur colors
+```{r}
+nyc_squirrels %>%
+  count(primary_fur_color, highlight_fur_color, sort =T)
+
+# how many highlight fur colors do we have
+nyc_squirrels %>%
+  count( highlight_fur_color, sort =T)
+```
+
 
 ```{r}
-
+nyc_squirrels %>%
+  count(approaches, indifferent, runs_from, sort = T)
 ```
+
+Does a S run away based on latitude?
+```{r}
+glm(runs_from ~ lat, data = nyc_squirrels, family="binomial") %>%     
+  summary()
+
+nyc_squirrels %>%
+  add_count(hectare) %>% 
+  group_by(hectare, n) %>%  # shows how many S per hectare
+  summarize_at(vars(long, lat, runs_from, indifferent), mean) %>% # summarizing multivars with same function
+  ungroup() %>%
+  filter(n>=10) %>%
+  ggplot(aes(long, lat, size = n, color = runs_from)) +
+  geom_point() +
+  theme_void() +
+  scale_color_gradient2(low = "blue", high = "red", mid="pink",
+                        labels=scales::percent, midpoint = .3) + # creates a 3 color divergent gradient
+  labs(color = "% of squirrels run", size = "# of squirrels",
+       title = "S in NW of Central Park are more likely to run away")
+```
+
+
+Stopped at 25 min mark
 
 
 
