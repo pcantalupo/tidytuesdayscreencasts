@@ -6,7 +6,7 @@ editor_options:
 ---
 
 # Squirrels in NYC
-- [Video](https://www.youtube.com/watch?v=6GV9sAD6Pi0), [Stopped here](https://youtu.be/6GV9sAD6Pi0?t=1502)
+- [Video](https://www.youtube.com/watch?v=6GV9sAD6Pi0), [Stopped here](https://youtu.be/6GV9sAD6Pi0?t=2226)
 - [Github repo](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-10-29)
 
 ```{r setup, include=FALSE}
@@ -88,25 +88,63 @@ Does a S run away based on latitude?
 glm(runs_from ~ lat, data = nyc_squirrels, family="binomial") %>%     
   summary()
 
-nyc_squirrels %>%
+by_hectare = nyc_squirrels %>%
   add_count(hectare) %>% 
   group_by(hectare, n) %>%  # shows how many S per hectare
   summarize_at(vars(long, lat, runs_from, indifferent), mean) %>% # summarizing multivars with same function
   ungroup() %>%
-  filter(n>=10) %>%
-  ggplot(aes(long, lat, size = n, color = runs_from)) +
+  filter(n>=10)
+
+# without any scale_XX_XX coloring
+ggplot(by_hectare, aes(long, lat, size = n, color = runs_from)) +
+  geom_point() +
+  theme_void() +
+  labs(color = "% of S run", size = "# of S",
+       title = "S in NW of Central Park are more likely to run away")
+
+# change color scaling of % of S Run (similar to Red Blue highlight in Excel). Add a 'mid' color because default is white
+# see link for scales::percent
+#    https://rdrr.io/cran/scales/man/label_percent.html
+ggplot(by_hectare, aes(long, lat, size = n, color = runs_from)) +
   geom_point() +
   theme_void() +
   scale_color_gradient2(low = "blue", high = "red", mid="pink",
-                        labels=scales::percent, midpoint = .3) + # creates a 3 color divergent gradient
-  labs(color = "% of squirrels run", size = "# of squirrels",
+          labels=scales::percent, midpoint = .3) + # creates a 3 color divergent gradient
+  labs(color = "% of S", size = "# of S",
        title = "S in NW of Central Park are more likely to run away")
 ```
 
+```{r}
+library(ggmap)
+?ggmap
 
-Stopped at 25 min mark
+#get_map(location = c(lon=-73.98, lat=40.77))
+
+#by_hectare %>%
+#  ggmap() +
+#  geom_point(aes(long, lat, color = runs_from))
+```
 
 
 
+```{r}
+library(sf)
 
+central_park_sf = read_sf("CentralAndProspectParks")
+
+ggplot(by_hectare) +
+  geom_sf(data = central_park_sf) +
+  geom_point(aes(long,lat, size=n,color=runs_from)) +
+  theme_void() +
+  scale_color_gradient2(low = "blue", high = "red", mid="pink",
+          labels=scales::percent, midpoint = .3) + # creates a 3 color divergent gradient
+  labs(color = "% of S", size = "# of S",
+       title = "S in NW of Central Park are more likely to run away")
+  coord_sf(datum = NA)
+```
+
+
+```{r}
+sessionInfo()
+```
 
