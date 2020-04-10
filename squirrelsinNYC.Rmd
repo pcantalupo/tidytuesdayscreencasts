@@ -6,7 +6,7 @@ editor_options:
 ---
 
 # Squirrels in NYC
-- [Video](https://www.youtube.com/watch?v=6GV9sAD6Pi0), [Stopped here](https://youtu.be/6GV9sAD6Pi0?t=2226)
+- [Video](https://www.youtube.com/watch?v=6GV9sAD6Pi0), [Stopped here](https://youtu.be/6GV9sAD6Pi0?t=2377)
 - [Github repo](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-10-29)
 
 ```{r setup, include=FALSE}
@@ -116,7 +116,7 @@ ggplot(by_hectare, aes(long, lat, size = n, color = runs_from)) +
 
 ```{r}
 library(ggmap)
-?ggmap
+#?ggmap
 
 #get_map(location = c(lon=-73.98, lat=40.77))
 
@@ -141,6 +141,19 @@ ggplot(by_hectare) +
   labs(color = "% of S", size = "# of S",
        title = "S in NW of Central Park are more likely to run away")
   coord_sf(datum = NA)
+```
+
+
+```{r}
+nyc_squirrels %>% count(other_activities, sort=T)
+nyc_squirrels %>% select(ends_with("ing"))
+
+# Gather column names ending in "ing" into a column called 'activity' then label that 'activity' as true or false in column 'doing'. The Gather command will use the values in the '*ing' columns for the 'doing' column
+nyc_squirrels %>% gather(activity, doing, ends_with("ing")) %>% select(activity, doing)
+
+
+nyc_squirrels %>% gather(activity, doing, ends_with("ing")) %>% filter(doing == T) %>% count(activity, sort=T)
+
 ```
 
 
