@@ -6,8 +6,17 @@ editor_options:
 ---
 
 # Squirrels in NYC
-- [Video](https://www.youtube.com/watch?v=6GV9sAD6Pi0)
-- [RForDataScience Github repo](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-10-29)
+- [Video](https://www.youtube.com/watch?v=6GV9sAD6Pi0), [Stopped here](https://youtu.be/6GV9sAD6Pi0?t=2377)
+- [Github repo](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-10-29)
+
+
+# What have we done here?
+* breaking down Central park into hectares
+* use by_hectare data to visualizae number of SQ
+* use `summarize_at` function to get percentages across many metrics per hectare 
+* create figure on NYC shapefile
+* create Shiny app to make many plots across cutoffs and variables
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
