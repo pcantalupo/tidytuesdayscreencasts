@@ -1,8 +1,8 @@
 # Tidy Tuesday Screencasts
-My testing ground for code based on David Robinson's [Tidy Tuesday Screencasts](https://www.youtube.com/channel/UCeiiqmVK07qhY-wvg3IZiZQ)
 
-[DR's Github repo](https://github.com/dgrtwo/data-screencasts)
-
+* Testing ground for code based on David Robinson
+    * Github repo [Data_Screencasts](https://github.com/dgrtwo/data-screencasts)
+    * [Youtube](https://www.youtube.com/user/safe4democracy/videos)
 
 # David R. Videos
 [NYC Squirrels](https://www.youtube.com/watch?v=6GV9sAD6Pi0)
