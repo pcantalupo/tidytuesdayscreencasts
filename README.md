@@ -5,8 +5,9 @@
     * [Youtube](https://www.youtube.com/user/safe4democracy/videos)
 
 # David R. Videos
-[NYC Squirrels](https://www.youtube.com/watch?v=6GV9sAD6Pi0)
-[Exploring US Beer Production](https://youtu.be/1R4X09w7tQ8?t=2)
+* [Ten tremendous tricks](https://www.youtube.com/watch?v=NDHSBUN_rVU)
+* [NYC Squirrels](https://www.youtube.com/watch?v=6GV9sAD6Pi0)
+* [Exploring US Beer Production](https://youtu.be/1R4X09w7tQ8?t=2)
 
 
 
