@@ -6,8 +6,8 @@ editor_options:
 ---
 
 # Squirrels in NYC
-- [Video](https://www.youtube.com/watch?v=6GV9sAD6Pi0), [Stopped here](https://youtu.be/6GV9sAD6Pi0?t=2377)
-- [Github repo](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-10-29)
+- [Video](https://www.youtube.com/watch?v=6GV9sAD6Pi0)
+- [RForDataScience Github repo](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-10-29)
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
