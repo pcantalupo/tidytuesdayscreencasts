@@ -1,6 +1,6 @@
 # Tidy Tuesday Screencasts
 
-* Testing ground for code based on David Robinson
+* Testing ground for code based on David Robinson's analysis of [TidyTuesday data from R For Data Science](https://github.com/rfordatascience/tidytuesday)
     * Github repo [Data_Screencasts](https://github.com/dgrtwo/data-screencasts)
     * [Youtube](https://www.youtube.com/user/safe4democracy/videos)
 
