@@ -89,14 +89,17 @@ glm(runs_from ~ lat, data = nyc_squirrels, family="binomial") %>%
   summary()
 
 by_hectare = nyc_squirrels %>%
-  add_count(hectare) %>% 
+  add_count(hectare) %>%
+  # above_ground mutate was added at ~57min
+  mutate(above_ground = !is.na(nyc_squirrels$location) & nyc_squirrels$location =='Above Ground') %>%
   group_by(hectare, n) %>%  # shows how many S per hectare
-  summarize_at(vars(long, lat, runs_from, indifferent), mean) %>% # summarizing multivars with same function
-  ungroup() %>%
-  filter(n>=10)
+  summarize_at(vars(long, lat, kuks:runs_from, indifferent, ends_with("ing"), above_ground), mean) %>% # summarizing multivars with same function
+  ungroup()
 
 # without any scale_XX_XX coloring
-ggplot(by_hectare, aes(long, lat, size = n, color = runs_from)) +
+by_hectare %>%
+  filter(n>=10) %>%
+  ggplot(aes(long, lat, size = n, color = runs_from)) +
   geom_point() +
   theme_void() +
   labs(color = "% of S run", size = "# of S",
@@ -105,7 +108,9 @@ ggplot(by_hectare, aes(long, lat, size = n, color = runs_from)) +
 # change color scaling of % of S Run (similar to Red Blue highlight in Excel). Add a 'mid' color because default is white
 # see link for scales::percent
 #    https://rdrr.io/cran/scales/man/label_percent.html
-ggplot(by_hectare, aes(long, lat, size = n, color = runs_from)) +
+by_hectare %>%
+  filter(n>=10) %>%
+  ggplot(aes(long, lat, size = n, color = runs_from)) +
   geom_point() +
   theme_void() +
   scale_color_gradient2(low = "blue", high = "red", mid="pink",
@@ -132,14 +137,16 @@ library(sf)
 
 central_park_sf = read_sf("CentralAndProspectParks")
 
-ggplot(by_hectare) +
+by_hectare %>%
+  filter(n>=10) %>%
+  ggplot() +
   geom_sf(data = central_park_sf) +
   geom_point(aes(long,lat, size=n,color=runs_from)) +
   theme_void() +
   scale_color_gradient2(low = "blue", high = "red", mid="pink",
           labels=scales::percent, midpoint = .3) + # creates a 3 color divergent gradient
   labs(color = "% of S", size = "# of S",
-       title = "S in NW of Central Park are more likely to run away")
+       title = "S in NW of Central Park are more likely to run away") +
   coord_sf(datum = NA)
 ```
 
@@ -154,6 +161,20 @@ nyc_squirrels %>% gather(activity, doing, ends_with("ing")) %>% select(activity,
 
 nyc_squirrels %>% gather(activity, doing, ends_with("ing")) %>% filter(doing == T) %>% count(activity, sort=T)
 
+```
+
+
+```{r}
+# Look at histograms of variables
+# Need to 'gather' these varaibles to go from Wide to Long for ggplot
+by_hectare %>% gather(variable, value, kuks:foraging) %>%
+  filter(n>=10) %>%
+  ggplot(aes(value)) + geom_histogram() + facet_wrap(~ variable)
+```
+
+
+```{r}
+nyc_squirrels %>% count(location)  # from this he added a Mutate to by_hectare to add % of SQ that are 'Above Ground'
 ```
 
 
