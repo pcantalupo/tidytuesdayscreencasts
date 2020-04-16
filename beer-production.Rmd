@@ -1,0 +1,31 @@
+---
+title: "BeerProduction"
+author: "PGC"
+date: "4/16/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Stopped [here ~2 min](https://youtu.be/1R4X09w7tQ8?t=120)
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+theme_set(theme_light())
+
+brewing_materials <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-03-31/brewing_materials.csv')
+beer_taxed <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-03-31/beer_taxed.csv')
+brewer_size <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-03-31/brewer_size.csv')
+beer_states <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-03-31/beer_states.csv')
+```
+
+
+```{r}
+brewing_materials
+```
+
