@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Stopped [here ~2 min](https://youtu.be/1R4X09w7tQ8?t=120)
+# Stopped [here ~7min](https://youtu.be/1R4X09w7tQ8?t=436)
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -26,6 +26,26 @@ beer_states <- readr::read_csv('https://raw.githubusercontent.com/rfordatascienc
 
 
 ```{r}
-brewing_materials
+brewing_materials %>% count(material_type, type)
+
+beer_taxed %>% count(tax_status)
+
+brewer_size
+
+beer_states
+```
+
+
+What ingredients are used in US beer prod.
+```{r}
+# Using forcats to reorder a factor variable based on numeric value in another column
+brewing_materials %>%
+  filter(year == max(year), month == max(month)) %>%
+  filter(!str_detect(material_type, "Total")) %>%
+  mutate(type = fct_reorder(type, month_current)) %>%
+  ggplot(aes(type, month_current, fill=material_type)) +
+  geom_col() + 
+  coord_flip()
+
 ```
 
