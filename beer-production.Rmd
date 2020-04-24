@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Stopped [here ~7min](https://youtu.be/1R4X09w7tQ8?t=436)
+# Stopped [here ~7min](https://www.youtube.com/watch?v=1R4X09w7tQ8)
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -16,9 +16,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(tidyverse)
+library(lubridate)
 theme_set(theme_light())
 
-brewing_materials <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-03-31/brewing_materials.csv')
+brewing_materials <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-03-31/brewing_materials.csv') %>% 
+  mutate(date = ymd(paste(year, month , 1))) %>%
+  filter(year < 2016)
 beer_taxed <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-03-31/beer_taxed.csv')
 brewer_size <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-03-31/brewer_size.csv')
 beer_states <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-03-31/beer_states.csv')
@@ -40,12 +43,38 @@ What ingredients are used in US beer prod.
 ```{r}
 # Using forcats to reorder a factor variable based on numeric value in another column
 brewing_materials %>%
-  filter(year == max(year), month == max(month)) %>%
+  filter(date == max(date)) %>%
   filter(!str_detect(material_type, "Total")) %>%
   mutate(type = fct_reorder(type, month_current)) %>%
   ggplot(aes(type, month_current, fill=material_type)) +
   geom_col() + 
   coord_flip()
 
+brewing_materials %>%
+  filter(!str_detect(material_type, "Total")) %>%
+  mutate(type = fct_reorder(type, month_current, sum )) %>%
+  ggplot(aes(date, month_current, fill=type)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::comma) +
+  labs(x = "Time",
+       y = "Pounds used in beer production",
+       fill="type")
+
+
+brewing_materials %>%
+  filter(str_detect(material_type, "Total.*products")) %>%
+  mutate(type = fct_reorder(type, month_current, sum )) %>%
+  ggplot(aes(date, month_current, fill=type)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::comma) +
+  labs(x = "Time",
+       y = "Pounds used in beer production",
+       fill="type")
+
 ```
+
+
+
+
+
 
