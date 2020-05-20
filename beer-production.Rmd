@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Stopped [here ~7min](https://www.youtube.com/watch?v=1R4X09w7tQ8)
+# Stopped at approx 22min [video](https://www.youtube.com/watch?v=1R4X09w7tQ8)
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -62,17 +62,61 @@ brewing_materials %>%
 
 
 brewing_materials %>%
-  filter(str_detect(material_type, "Total.*products")) %>%
+  filter(stringr::str_detect(material_type, "Total.*products")) %>%
   mutate(type = fct_reorder(type, month_current, sum )) %>%
   ggplot(aes(date, month_current, fill=type)) +
   geom_col() +
   scale_y_continuous(labels = scales::comma) +
   labs(x = "Time",
        y = "Pounds used in beer production",
-       fill="type")
-
+       fill="TYPE")
 ```
 
+
+```{r}
+brewing_materials %>% count(type)
+brewing_materials %>% count(material_type)
+brewing_materials %>% count(data_type)
+```
+
+
+Tidymetrics
+
+```{r}
+# approx time 17min
+brewing_materials %>%
+  rename(material = type) %>%
+  filter(!stringr::str_detect(material_type, "Total")) %>%
+  tidymetrics::cross_by_dimensions(material_type, material) %>%
+  distinct (material_type, material)
+
+brewing_summarized = brewing_materials %>%
+  rename(material = type) %>%
+  filter(!stringr::str_detect(material_type, "Total")) %>%
+  tidymetrics::cross_by_dimensions(material_type, material) %>%
+  tidymetrics::cross_by_periods(c("month", "quarter", "year")) %>%
+  summarize(nb_pounds = sum(month_current)) %>% 
+  ungroup()
+
+# approx time ~20min
+brewing_summarized %>%
+  filter(material_type == "All", material=="All", period=="quarter") %>%
+  ggplot(aes(date, nb_pounds)) +
+  geom_col()
+
+
+# visualize by Material Type
+brewing_summarized %>%
+  filter(material_type != "All", material=="All", period=="quarter") %>%
+  ggplot(aes(date, nb_pounds, fill= material_type)) +
+  geom_col()
+
+# visualize by Material by Year (~21 min)
+brewing_summarized %>%
+  filter(material_type == "All", material!="All", period=="year") %>%
+  ggplot(aes(date, nb_pounds, fill= material)) +
+  geom_col()
+```
 
 
 
