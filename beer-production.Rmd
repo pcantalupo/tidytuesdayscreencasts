@@ -5,9 +5,22 @@ date: "4/16/2020"
 output: html_document
 editor_options: 
   chunk_output_type: console
+owner: pgc
+name: metrics_beer_production
+metrics:
+  nb_pounds:
+    title: "# of Pounds Produced FOO"
+    description: "Number of pounds used in beer prod in the US FOO"
+dimensions:
+  material_type:
+    title: TypeFoo
+    description: GrainFoo / non-grainFoo
+  material:
+    title: MaterialFoo
+    description: WheatFoo, hops, corn, etc.
 ---
 
-# Stopped at approx 22min [video](https://www.youtube.com/watch?v=1R4X09w7tQ8)
+# Stopped at approx 32min [video](https://www.youtube.com/watch?v=1R4X09w7tQ8)
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -83,6 +96,7 @@ brewing_materials %>% count(data_type)
 Tidymetrics
 
 ```{r}
+library(tidymetrics)
 # approx time 17min
 brewing_materials %>%
   rename(material = type) %>%
@@ -118,6 +132,13 @@ brewing_summarized %>%
   geom_col()
 ```
 
+ShinyMetrics
+```{r}
+use_metrics_scaffold(brewing_summarized)
+brewing_metrics = create_metrics(brewing_summarized)
+library(shinymetrics)
+preview_metric(brewing_metrics$beer_production_nb_pounds)
+```
 
 
 
