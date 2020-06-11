@@ -20,7 +20,7 @@ dimensions:
     description: WheatFoo, hops, corn, etc.
 ---
 
-# Stopped at approx 32min [video](https://www.youtube.com/watch?v=1R4X09w7tQ8)
+# Stopped at approx 39min [video](https://www.youtube.com/watch?v=1R4X09w7tQ8)
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -140,6 +140,19 @@ library(shinymetrics)
 preview_metric(brewing_metrics$beer_production_nb_pounds)
 ```
 
+
+## Brewer Size
+- He said this highlights how to order factor in ggplot legend and to lump low factors into one group 
+```{r}
+brewer_size %>%
+  filter(brewer_size != "Total", !is.na(total_barrels)) %>%
+  mutate(parse_number = parse_number(brewer_size)) %>%
+  mutate(brewer_size = fct_lump(brewer_size, 5, w = total_barrels),
+         barrel_number = coalesce(parse_number(as.character(brewer_size)), 1),
+         brewer_size = fct_reorder(brewer_size, barrel_number)) %>%
+  ggplot(aes(year, total_barrels, fill=brewer_size)) + 
+  geom_col()
+```
 
 
 
