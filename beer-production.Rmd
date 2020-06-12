@@ -20,7 +20,7 @@ dimensions:
     description: WheatFoo, hops, corn, etc.
 ---
 
-# Stopped at approx 39min [video](https://www.youtube.com/watch?v=1R4X09w7tQ8)
+# Stopped at approx 52min [video](https://www.youtube.com/watch?v=1R4X09w7tQ8)
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -93,6 +93,16 @@ brewing_materials %>% count(data_type)
 ```
 
 
+```{r}
+brewing_materials %>%
+  filter(material_type == "Total Used") %>%
+  ggplot(aes(month, month_current, color=factor(year))) +
+  geom_line() +
+  expand_limits(y = 0)
+```
+
+
+
 Tidymetrics
 
 ```{r}
@@ -152,7 +162,54 @@ brewer_size %>%
          brewer_size = fct_reorder(brewer_size, barrel_number)) %>%
   ggplot(aes(year, total_barrels, fill=brewer_size)) + 
   geom_col()
+
+# Seems like some missing data in the plot. Notice that there is no Blue in 2009 and 2010
+# Determine which Brewwer_sizes have missing data for 1 or more Years
+brewer_size %>% group_by(brewer_size) %>% summarize_each(list(MinYear = min, MaxYear = max, NumYears = n_distinct), year) %>% mutate(MaxNumYear = max(NumYears), NumMissingYears = MaxNumYear - NumYears) %>% filter(NumYears < MaxNumYear)
 ```
 
+
+## Beer States - where is beer produced?
+```{r}
+beer_states %>% count(type, sort =T, wt = barrels)
+
+beer_states %>%
+  group_by(year) %>%
+  summarize(barrels = sum(barrels, na.rm=T))
+
+# who consumes beer on premises
+beer_states %>%
+  filter(type=="On Premises", year == max(year), state != "total") %>% arrange(-barrels)
+
+# what State has highest On Prem in terms of percentage across the 3 types 
+state_percents_2019 = beer_states %>%
+  filter(year == max(year), state != "total") %>%
+  group_by(state) %>%
+  mutate(percent = barrels/sum(barrels)) %>%
+  ungroup()
+
+state_percents_2019 %>% 
+  filter(type == "On Premises") %>% arrange(-percent)
+```
+
+
+
+```{r}
+library(maps)
+library(sf)
+states = st_as_sf(map("state", plot=F, fill=T))
+
+state.name
+state.abb
+
+state_percents_2019 %>%
+  filter(type == "On Premises") %>%
+  mutate(ID = stringr::str_to_lower(state.name[match(state, state.abb)])) %>%
+  inner_join(states, by="ID") %>%
+  ggplot(aes(geometry = geom, fill=percent)) +
+  geom_sf()
+
+
+```
 
 
