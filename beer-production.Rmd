@@ -202,14 +202,48 @@ states = st_as_sf(map("state", plot=F, fill=T))
 state.name
 state.abb
 
-state_percents_2019 %>%
-  filter(type == "On Premises") %>%
+statejoined=state_percents_2019 %>%
   mutate(ID = stringr::str_to_lower(state.name[match(state, state.abb)])) %>%
-  inner_join(states, by="ID") %>%
+  inner_join(states, by="ID")
+
+statejoined %>%
   ggplot(aes(geometry = geom, fill=percent)) +
-  geom_sf()
-
-
+  geom_sf() + 
+  scale_fill_gradient2(low="blue", high="red", midpoint=.5,
+                       labels = scales::percent)+
+  facet_wrap(~type, nrow=2)+
+  ggthemes::theme_map() +
+  theme(legend.position = "right") +
+  labs(title="How is beer consumed in the US?",
+       fill="% consumed on prem.")
 ```
 
+
+What about how things change over time?
+```{r}
+library(gganimate)
+allyearsjoined = beer_states %>%
+  filter(state != "total") %>%
+  group_by(state, year) %>%
+  mutate(percent = barrels/sum(barrels)) %>%
+  ungroup() %>%
+  mutate(ID = stringr::str_to_lower(state.name[match(state, state.abb)])) %>%
+  inner_join(states, by="ID")
+
+
+p = allyearsjoined %>%
+  ggplot(aes(geometry = geom, fill=percent)) +
+  geom_sf() + 
+  facet_wrap(~type, nrow=2) +
+  scale_fill_gradient2(low="blue", high="red", midpoint=.5,
+                       labels = scales::percent)+
+  ggthemes::theme_map() +
+  theme(legend.position = "right") +
+  labs(title="How is beer consumed in the US? ({ as.integer(frame_time) })",
+       fill="% consumed on prem.")
+
+p2 = p + transition_time(year)
+
+animate(p2, renderer = gifski_renderer())
+```
 
